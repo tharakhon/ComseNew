@@ -19,7 +19,7 @@ const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password:'',
-  port:'3306',
+  port:'3307',
   database: 'newbackend'
 });
 
@@ -314,8 +314,20 @@ app.post('/confirmotp', jsonParser,function (req, res, next) {
   }else{
     res.json({status : 'error',message:'The code you have entered is not correct or may expired'})
   }
-
-  
+})
+app.post('/logfile', jsonParser,function (req, res, next) {
+  const token = req.headers.authorization.split(' ')[1]
+  var decoded = jwt.verify(token, secret);console.log(decoded)
+  connection.execute(
+    'INSERT INTO logfile (email, status ) VALUES (?,?)',
+    [decoded.email,req.body.status],
+    function (err, results, fields) {
+      if (err) {
+        res.json({ status: 'error', message: err })
+        return
+      }
+      res.json({ status: 'ok', message: "Success" })
+    });
 })
 app.listen(5000, function () {
   console.log('CORS-enabled web server listening on port 5000')

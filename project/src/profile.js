@@ -101,9 +101,22 @@ export default function Login() {
           })
   },[])
      const handleLogout = (event) =>{
-        event.preventDefault();
-        localStorage.removeItem('token');
-        navigate('/')
+       event.preventDefault();
+       const token = localStorage.getItem('token')
+       const jsonData = {
+         status: 'Logout'
+       };
+       fetch("http://localhost:5000/logfile", {
+         method: 'POST',
+         headers: {
+           'Content-Type': 'application/json',
+           'AUthorization':'Bearer '+token
+         },
+         body: JSON.stringify(jsonData),//{ email:เมลที่กรอกไป,iat: เวลาสร้าง }
+       })
+         .then(response => response.json())
+       localStorage.removeItem('token');
+       navigate('/')
      }
      const handleChangePass = (event) =>{
       event.preventDefault();

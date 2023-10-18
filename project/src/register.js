@@ -60,6 +60,7 @@ function Register() {
       fname: fname,
       lname: lname,
       password: password,
+      status: 'Register'
     };
 
     fetch("http://localhost:5000/register", {
@@ -76,6 +77,16 @@ function Register() {
             html: <i>{data.message}</i>,
             icon: 'success'
           }).then((value) => {
+            const token = localStorage.getItem('token')
+              fetch("http://localhost:5000/logfile", {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'AUthorization': 'Bearer ' + token
+                },
+                body: JSON.stringify(jsonData),//{ email:เมลที่กรอกไป,iat: เวลาสร้าง }
+              })
+                .then(response => response.json())
             navigate('/')
           })
         } else {
@@ -86,6 +97,7 @@ function Register() {
         }
       })
       .catch(error => console.log('error', error));
+     
   }
   return (
     <div>
